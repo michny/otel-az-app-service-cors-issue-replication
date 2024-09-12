@@ -10,9 +10,19 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+                      {
+                          policy.WithOrigins("https://lemon-coast-00e795f03.5.azurestaticapps.net");
+                      });
+});
+
 // Setup OpenTelemetry Tracing
 builder.Services.AddOpenTelemetry().WithTracing(builder =>
 {
+    //builder.SetSampler(new AlwaysOnSampler());
+
     builder
         .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("tracing-poc"))
         // Configure ASP.NET Core Instrumentation
@@ -31,6 +41,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthorization();
 
